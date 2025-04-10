@@ -110,13 +110,11 @@ def getCommitMessage(commitHash = env.GIT_COMMIT) {
 // Function to send Slack notification
 def sendSlackNotification(String status, String message = null) {
 
-     def slackWebhookUrl = "https://hooks.slack.com/services/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"
+     def slackWebhookUrl = "https://hooks.slack.com/services/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"
 
     def payload = [
         text: "${status}: ${message}",
-        username: "Jenkins",
-        icon_emoji: ":jenkins:"
-    ]
+      ]
 
     def jsonPayload = groovy.json.JsonOutput.toJson(payload).replace('"', '\\"')
 
