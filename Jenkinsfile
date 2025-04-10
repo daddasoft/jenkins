@@ -39,10 +39,10 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                checkout scm
-                 script {
+     stage('Test') {
+    steps {
+        checkout scm
+        script {
             // Get commit message and store it in a variable
             def commitMessage = bat(script: "git log -1 --pretty=%%B ${env.GIT_COMMIT}", returnStdout: true).trim()
             
@@ -55,9 +55,8 @@ pipeline {
             // Alternatively, store it as an environment variable for later use
             env.COMMIT_MESSAGE = commitMessage
         }
-            }
-        }
-
+    }
+}
 
         stage('Build') {
             steps {
