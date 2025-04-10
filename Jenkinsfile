@@ -44,7 +44,7 @@ pipeline {
         checkout scm
         script {
             // Get commit message and store it in a variable
-            def commitMessage = bat(script: "git log -1 --pretty=\"%%%%B \"${env.GIT_COMMIT}", returnStdout: true).trim()
+            def commitMessage = bat(script: "git log -1 --pretty=^%B${env.GIT_COMMIT}", returnStdout: true).trim()
             
             // Clean up Windows command output (removes command echoing)
             commitMessage = commitMessage.replaceAll(/(?m)^.*>\s*/, "").trim()
