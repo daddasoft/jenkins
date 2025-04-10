@@ -43,14 +43,7 @@ pipeline {
     steps {
         checkout scm
         script {
-            def cmd = "git log -1 --format=\"%%B\" ${env.GIT_COMMIT}"
-            echo "Running command: ${cmd}"
-            def output = bat(script: cmd, returnStdout: true).trim()
-            
-            // Extract actual commit message from bat output
-            // On Windows, the output typically includes the command echo and other text
-            COMMIT_MESSAGE = output.readLines().drop(1).join("\n").trim()
-            
+            COMMIT_MESSAGE = getCommitMessage()
             echo "Commit message: ${COMMIT_MESSAGE}"
         }
     }
@@ -100,4 +93,15 @@ pipeline {
             }
         }
     }
+}
+
+// Function to get commit message
+def getCommitMessage(commitHash = env.GIT_COMMIT) {
+    def cmd = "git log -1 --format=\"%%B\" ${commitHash}"
+    echo "Running command: ${cmd}"
+    def output = bat(script: cmd, returnStdout: true).trim()
+    
+    // Extract actual commit message from bat output
+    // On Windows, the output typically includes the command echo and other text
+    return output.readLines().drop(1).join("\n").trim()
 }
