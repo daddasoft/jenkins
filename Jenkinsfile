@@ -4,6 +4,7 @@ pipeline {
 
     environment {
         MY_CUSTOM_VAR = "customValue"
+        COMMIT_MESSAGE = ""
     }
 
     parameters {
@@ -48,9 +49,9 @@ pipeline {
             
             // Extract actual commit message from bat output
             // On Windows, the output typically includes the command echo and other text
-            def commitMessage = output.readLines().drop(1).join("\n").trim()
+            COMMIT_MESSAGE = output.readLines().drop(1).join("\n").trim()
             
-            echo "Commit message: ${commitMessage}"
+            echo "Commit message: ${COMMIT_MESSAGE}"
         }
     }
 }
