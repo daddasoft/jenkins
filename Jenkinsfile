@@ -39,6 +39,7 @@ pipeline {
                 if (params.MY_PARAM) {
                     echo "Parameter MY_PARAM: ${params.MY_PARAM}"
                 }
+                bat 'echo "Build completed successfully! ${params.MY_PARAM}"'
             }
         }
         failure {
