@@ -1,11 +1,6 @@
 pipeline {
     agent any
-
-    node {
-    withCheckout(scm) {
-         echo "GIT_COMMIT is ${env.GIT_COMMIT}"
-    }
-}
+ 
 
     environment {
         MY_CUSTOM_VAR = "customValue"
@@ -15,7 +10,21 @@ pipeline {
         string(name: 'MY_PARAM', defaultValue: 'default', description: 'A build parameter')
     }
 
+
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                echo "Checking out code from branch: ${env.BRANCH_NAME}"
+                checkout scm
+                echo "GIT_COMMIT is ${env.GIT_COMMIT}"
+                // Use batch command on Windows
+                bat 'echo "Checking out..."'
+            }
+        }
+
+
         stage('Build') {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
