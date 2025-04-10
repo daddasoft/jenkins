@@ -32,8 +32,29 @@ pipeline {
                 echo "build display name ${env.GIT_PREVIOUS_COMMIT}"
                 echo "build display name ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                 echo "build display name ${env.SVN_REVISION}"
+                // get commit message by hash
+                bat "git log -1 --pretty=%B ${env.GIT_COMMIT}"
                 // Use batch command on Windows
                 bat 'echo "Checking out..."'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                checkout scm
+                 script {
+            // Get commit message and store it in a variable
+            def commitMessage = bat(script: "git log -1 --pretty=%B ${env.GIT_COMMIT}", returnStdout: true).trim()
+            
+            // Clean up Windows command output (removes command echoing)
+            commitMessage = commitMessage.replaceAll(/(?m)^.*>\s*/, "").trim()
+            
+            // Print both the commit hash and message
+            echo "Commit ${env.GIT_COMMIT}: ${commitMessage}"
+            
+            // Alternatively, store it as an environment variable for later use
+            env.COMMIT_MESSAGE = commitMessage
+        }
             }
         }
 
