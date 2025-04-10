@@ -38,22 +38,22 @@ pipeline {
             }
         }
 
-     stage('Test') {
+    stage('Test') {
     steps {
         checkout scm
         script {
-            def cmd = """git log -1 --format="%%B" ${env.GIT_COMMIT}"""
+            def cmd = "git log -1 --format=\"%%B\" ${env.GIT_COMMIT}"
             echo "Running command: ${cmd}"
-            def commitMessage = bat(script: cmd, returnStdout: true).trim()
+            def output = bat(script: cmd, returnStdout: true).trim()
             
-            // Remove unwanted echoed lines from the bat step output, if necessary
-            commitMessage = commitMessage.replaceAll(/(?m)^.*>\s*/, "").trim()
+            // Extract actual commit message from bat output
+            // On Windows, the output typically includes the command echo and other text
+            def commitMessage = output.readLines().drop(1).join("\n").trim()
             
-            echo "Commit hahahhaha ${commitMessage}"
+            echo "Commit message: ${commitMessage}"
         }
     }
 }
-
         stage('Build') {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
