@@ -42,7 +42,7 @@ pipeline {
     steps {
         checkout scm
         script {
-            def cmd = """git log -1 --format="%B" ${env.GIT_COMMIT}"""
+            def cmd = """git log -1 --format="^%B" ${env.GIT_COMMIT}"""
             echo "Running command: ${cmd}"
             def commitMessage = bat(script: cmd, returnStdout: true).trim()
             
