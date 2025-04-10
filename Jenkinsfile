@@ -49,7 +49,7 @@ pipeline {
             // Remove unwanted echoed lines from the bat step output, if necessary
             commitMessage = commitMessage.replaceAll(/(?m)^.*>\s*/, "").trim()
             
-            echo "Commit ${env.GIT_COMMIT}: ${commitMessage}"
+            echo "Commit hahahhaha ${commitMessage}"
             env.COMMIT_MESSAGE = commitMessage
         }
     }
