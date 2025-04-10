@@ -80,6 +80,7 @@ pipeline {
                     echo "Parameter MY_PARAM: ${params.MY_PARAM}"
                 }
                 bat "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
+                sendSlackNotification(":check_mark: SUCCESS", "Build succeeded for ${env.JOB_NAME} #${env.BUILD_NUMBER} on branch ${env.GIT_BRANCH}. Commit message: ${COMMIT_MESSAGE}")
             }
         }
         failure {
@@ -104,4 +105,23 @@ def getCommitMessage(commitHash = env.GIT_COMMIT) {
     // Extract actual commit message from bat output
     // On Windows, the output typically includes the command echo and other text
     return output.readLines().drop(1).join("\n").trim()
+}
+
+// Function to send Slack notification
+def sendSlackNotification(String status, String message = null) {
+
+    def slackChannel = "#dev"
+    def slackWebhookUrl = "https://hooks.slack.com/services/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"
+
+    def payload = [
+        channel: slackChannel,
+        text: "${status}: ${message}",
+        username: "Jenkins",
+        icon_emoji: ":jenkins:"
+    ]
+
+    def jsonPayload = groovy.json.JsonOutput.toJson(payload)
+
+    // Send the notification
+    bat "curl -X POST -H 'Content-type: application/json' --data '${jsonPayload}' ${slackWebhookUrl}"
 }
