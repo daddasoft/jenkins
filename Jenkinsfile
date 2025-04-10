@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    node {
+    withCheckout(scm) {
+         echo "GIT_COMMIT is ${env.GIT_COMMIT}"
+    }
+}
+
     environment {
         MY_CUSTOM_VAR = "customValue"
     }
