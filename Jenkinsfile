@@ -111,7 +111,7 @@ def getCommitMessage(commitHash = env.GIT_COMMIT) {
 def sendSlackNotification(String status, String message = null) {
 
     def slackChannel = "#dev"
-    def slackWebhookUrl = "https://hooks.slack.com/services/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"
+    def slackWebhookUrl = "https://hooks.slack.com/services/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"
 
     def payload = [
         channel: slackChannel,
