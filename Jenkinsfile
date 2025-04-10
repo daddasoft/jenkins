@@ -33,7 +33,7 @@ pipeline {
                 echo "build display name ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                 echo "build display name ${env.SVN_REVISION}"
                 // get commit message by hash
-                bat "git log -1 --pretty=%B ${env.GIT_COMMIT}"
+                bat "git log -1 --pretty=^%B ${env.GIT_COMMIT}"
                 // Use batch command on Windows
                 bat 'echo "Checking out..."'
             }
