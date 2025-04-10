@@ -36,10 +36,12 @@ pipeline {
                 echo "Git Change Log: ${env.GIT_CHANGELOG}"
                 echo "Git Author: ${env.GIT_AUTHOR}"
                 echo "Git Author Email: ${env.GIT_AUTHOR_EMAIL}"
+                echo "Build result: ${currentBuild.result}"
+                echo "Build duration: ${currentBuild.duration}ms"
                 if (params.MY_PARAM) {
                     echo "Parameter MY_PARAM: ${params.MY_PARAM}"
                 }
-bat "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
+                bat "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
             }
         }
         failure {
@@ -47,6 +49,8 @@ bat "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}
                 echo "Build failed!"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
+                 echo "Build result: ${currentBuild.result}"
+                 echo "Build duration: ${currentBuild.duration}ms"
                 // Additional failure handling can also use global variables.
             }
         }
