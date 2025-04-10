@@ -16,9 +16,15 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo "Checking out code from branch: ${env.BRANCH_NAME}"
                 checkout scm
                 echo "GIT_COMMIT is ${env.GIT_COMMIT}"
+                echo "GIT_BRANCH is ${env.GIT_BRANCH}"
+                echo "GIT_URL is ${env.GIT_URL}"
+                echo "GIT_TAG is ${env.GIT_TAG}"
+                echo "GIT_CHANGELOG is ${env.GIT_CHANGELOG}"
+                echo "GIT_AUTHOR is ${env.GIT_AUTHOR}"
+                echo "GIT_AUTHOR_EMAIL is ${env.GIT_AUTHOR_EMAIL}"
+                echo "Commit message is ${env.GIT_COMMIT_MESSAGE}"
                 // Use batch command on Windows
                 bat 'echo "Checking out..."'
             }
