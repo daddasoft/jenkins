@@ -120,8 +120,7 @@ def sendSlackNotification(String status, String message = null) {
         icon_emoji: ":jenkins:"
     ]
 
-    def jsonPayload = groovy.json.JsonOutput.toJson(payload)
+    def jsonPayload = groovy.json.JsonOutput.toJson(payload).replace('"', '\\"')
 
-    // Send the notification
-    bat "curl -X POST -H 'Content-type: application/json' --data '${jsonPayload}' ${slackWebhookUrl}"
+    bat "curl -X POST -H \"Content-type: application/json\" --data \"${jsonPayload}\" ${slackWebhookUrl}"
 }
