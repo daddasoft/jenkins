@@ -13,8 +13,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
-                // Simulate a build step
-                sh 'echo "Building..."'
+                // Use batch command on Windows
+                bat 'echo "Building..."'
             }
         }
     }
@@ -22,7 +22,6 @@ pipeline {
     post {
         success {
             script {
-                // Access global variables in the post block
                 echo "Build succeeded!"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
