@@ -25,6 +25,13 @@ pipeline {
                 echo "GIT_AUTHOR is ${env.GIT_AUTHOR}"
                 echo "GIT_AUTHOR_EMAIL is ${env.GIT_AUTHOR_EMAIL}"
                 echo "Commit message is ${env.GIT_COMMIT_MESSAGE}"
+                echo "change title name is ${env.CHANGE_TITLE}"
+                echo "change id is ${env.CHANGE_ID}"
+                echo "change target is ${env.CHANGE_TARGET}"
+                echo "build tag ${env.BUILD_TAG}"
+                echo "build display name ${env.GIT_PREVIOUS_COMMIT}"
+                echo "build display name ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
+                echo "build display name ${env.SVN_REVISION}"
                 // Use batch command on Windows
                 bat 'echo "Checking out..."'
             }
