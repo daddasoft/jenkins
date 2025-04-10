@@ -42,16 +42,14 @@ pipeline {
     steps {
         checkout scm
         script {
-            // Get commit message and store it in a variable
-            def commitMessage = bat(script: 'git log -1 --pretty=%B \"${env.GIT_COMMIT}\"', returnStdout: true).trim()
+            def cmd = """git log -1 --format="%%B" ${env.GIT_COMMIT}"""
+            echo "Running command: ${cmd}"
+            def commitMessage = bat(script: cmd, returnStdout: true).trim()
             
-            // Clean up Windows command output (removes command echoing)
+            // Remove unwanted echoed lines from the bat step output, if necessary
             commitMessage = commitMessage.replaceAll(/(?m)^.*>\s*/, "").trim()
             
-            // Print both the commit hash and message
             echo "Commit ${env.GIT_COMMIT}: ${commitMessage}"
-            
-            // Alternatively, store it as an environment variable for later use
             env.COMMIT_MESSAGE = commitMessage
         }
     }
