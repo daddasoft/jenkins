@@ -152,7 +152,7 @@ def sendFormattedSlackNotification(String status, String profile) {
     def emoji = status.equalsIgnoreCase("success") ? ":white_check_mark:" : ":x:"
     
     // Build the message with or without additional info
-    def message = """Build ${status.toLowerCase()} for Winpharm Backend  **${profile}/${getHash()}/\\"${getCommitMessage()}\\"** """
+    def message = """Build ${status.toLowerCase()} for Winpharm Backend  *${profile}/${getHash()}/"${getCommitMessage()}"* """
     
   
     // Send the notification using credentials
