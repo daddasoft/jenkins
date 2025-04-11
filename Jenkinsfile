@@ -15,6 +15,21 @@ pipeline {
 
     stages {
 
+
+
+
+        stage('testing Message Sending') {
+            steps {
+              withCredentials([string(credentialsId: 'SLACK_HOOK', variable: 'SLACK_WEBHOOK_URL')]) {
+	                sh """
+	                    curl -X POST "$SLACK_WEBHOOK_URL" \
+	                    -H "Content-Type: application/json" \
+	                    -d '{"text":       ":x:  commit message is ${getCommitMessage()}  :x:  commit hash is ${getHash()}"}'
+	                """
+	            }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -111,7 +126,7 @@ def getCommitMessage(commitHash = env.GIT_COMMIT) {
 
 // Function to send Slack notification
 def sendSlackNotification(String status, String message = null) {
-    def slackWebhookUrl = "https://hooks.slack.com/services/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"
+     slackWebhookUrl = "https://hooks.slack.com/services/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"
 
     def payload = [
         text: "${status}: ${message}"
