@@ -127,10 +127,10 @@ def sendSlackNotification(String status, String message = null) {
 
 
 def getHash() {
-    def cmd = "git rev-parse HEAD"
+    def cmd = "git rev-parse --short HEAD"
     echo "Running command: ${cmd}"
     def output = sh(script: cmd, returnStdout: true).trim()
     
-    // On Linux we don't need to drop lines like in Windows
+    // Return the shortened hash
     return output.trim()
 }
