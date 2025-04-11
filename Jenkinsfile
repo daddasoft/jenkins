@@ -67,12 +67,15 @@ pipeline {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
                 // Use shell command on Ubuntu
-                sh 'adfsdfsadfsdfs'
+                 
             }
         }
     }
 
     post {
+        always {
+             cleanWs()
+        }
         success {
             script {
                 echo "Build succeeded!"
@@ -109,31 +112,11 @@ pipeline {
 }
 
 // Function to get commit message
-def getCommitMessage(commitHash = env.GIT_COMMIT) {
-    def cmd = "git log -1 --format=\"%B\" ${commitHash}"
-    echo "Running command: ${cmd}"
-    def output = sh(script: cmd, returnStdout: true).trim()
-    
-    // On Linux we don't need to drop lines like in Windows
+String getCommitMessage(String commitHash = env.GIT_COMMIT) {
+    cmd = "git log -1 --format=\"%B\" ${commitHash}"
+    output = sh(script: cmd, returnStdout: true).trim()
     return output.trim()
 }
-
-// Function to send Slack notification
-def sendSlackNotification(String status, String message = null) {
-     slackWebhookUrl = "https://hooks.slack.com/services/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"
-
-    def payload = [
-        text: "${status}: ${message}"
-    ]
-
-    def jsonPayload = groovy.json.JsonOutput.toJson(payload)
-    
-    // Properly escape the JSON for shell command
-    sh """
-        curl -X POST -v -H 'Content-type: application/json' --data '${jsonPayload}' ${slackWebhookUrl}
-    """
-}
-
 
 String getHash() {
     cmd = 'git rev-parse --short HEAD'
@@ -141,21 +124,12 @@ String getHash() {
     return output.trim()
 }
 
-
-String GetNow() {
-    return new Date().format("yyyy-MM-dd HH:mm:ss")
-}
-
-
-def sendFormattedSlackNotification(String status, String profile) {
+void sendFormattedSlackNotification(String status, String profile) {
     // Set emoji based on status
-    def emoji = status.equalsIgnoreCase("success") ? ":white_check_mark:" : ":x:"
+    emoji = status.equalsIgnoreCase("success") ? ":white_check_mark:" : ":x:"
     
-    // Build the message with or without additional info
-    def message = """Build ${status.toLowerCase()} for Winpharm Backend  *${profile}/${getHash()}/\\"${getCommitMessage()}\\"* """
+    message = """Build ${status.toLowerCase()} for Winpharm Backend  *${profile}/${getHash()}/\\"${getCommitMessage()}\\"* """
     
-  
-    // Send the notification using credentials
     withCredentials([string(credentialsId: 'SLACK_HOOK', variable: 'SLACK_WEBHOOK_URL')]) {
         sh """
             curl -X POST "\${SLACK_WEBHOOK_URL}" \\
