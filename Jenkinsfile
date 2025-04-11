@@ -35,7 +35,10 @@ pipeline {
                 echo "build display name ${env.SVN_REVISION}"
                 // get commit message by hash
                 // Use shell command on Ubuntu
-                sh 'echo "Checking out..."'
+                sh 'echo "Checking out..."' 
+
+                def commitHash = getHash()
+                echo "Commit hash: ${commitHash}"
             }
         }
 
@@ -120,4 +123,14 @@ def sendSlackNotification(String status, String message = null) {
     sh """
         curl -X POST -v -H 'Content-type: application/json' --data '${jsonPayload}' ${slackWebhookUrl}
     """
+}
+
+
+def getHash() {
+    def cmd = "git rev-parse HEAD"
+    echo "Running command: ${cmd}"
+    def output = sh(script: cmd, returnStdout: true).trim()
+    
+    // On Linux we don't need to drop lines like in Windows
+    return output.trim()
 }
