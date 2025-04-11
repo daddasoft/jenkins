@@ -21,13 +21,9 @@ pipeline {
 
         stage('testing Message Sending') {
             steps {
-              withCredentials([string(credentialsId: 'SLACK_HOOK', variable: 'SLACK_WEBHOOK_URL')]) {
-	                sh """
-	                    curl -X POST "$SLACK_WEBHOOK_URL" \
-	                    -H "Content-Type: application/json" \
-	                    -d '{"text":       "Build succeeded for Winpharm Backend with Profile *${params.PROFILE}* on Commit *\\"${getCommitMessage()}*\\" with Hash *${getHash()}* at ${GetNow()}."}'
-	                """
-	            }
+               script {
+                    sendFormattedSlackNotification('SUCCESS', params.PROFILE)
+                }
             }
         }
 
@@ -95,11 +91,8 @@ pipeline {
                 echo "Git Author Email: ${env.GIT_AUTHOR_EMAIL}"
                 echo "Build result: ${currentBuild.result}"
                 echo "Build duration: ${currentBuild.duration}ms"
-                if (params.MY_PARAM) {
-                    echo "Parameter MY_PARAM: ${params.MY_PARAM}"
-                }
-                sh "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
-                sendSlackNotification(":check_mark: SUCCESS", "Build succeeded for ${env.JOB_NAME} #${env.BUILD_NUMBER} on branch ${env.GIT_BRANCH}. Commit message: ${COMMIT_MESSAGE}")
+         
+ 
             }
         }
         failure {
@@ -110,7 +103,6 @@ pipeline {
                 echo "Build Number: ${env.BUILD_NUMBER}"
                  echo "Build result: ${currentBuild.result}"
                  echo "Build duration: ${currentBuild.duration}ms"
-                sendSlackNotification(":x: FAILURE", "Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}. Check ${env.BUILD_URL} for details.")
             }
         }
     }
@@ -152,4 +144,24 @@ String getHash() {
 
 String GetNow() {
     return new Date().format("yyyy-MM-dd HH:mm:ss")
+}
+
+
+def sendFormattedSlackNotification(String status, String profile) {
+    // Set emoji based on status
+    def emoji = status.equalsIgnoreCase("success") ? ":white_check_mark:" : ":x:"
+    
+    // Build the message with or without additional info
+    def message = """
+    Build ${status.toLowerCase()} for Winpharm Backend  ${profile}/${getHash()}**\\"${getCommitMessage()}\\"** """
+    
+  
+    // Send the notification using credentials
+    withCredentials([string(credentialsId: 'SLACK_HOOK', variable: 'SLACK_WEBHOOK_URL')]) {
+        sh """
+            curl -X POST "\${SLACK_WEBHOOK_URL}" \\
+            -H "Content-Type: application/json" \\
+            -d '{"text": "${emoji} ${message}"}'
+        """
+    }
 }
