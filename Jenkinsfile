@@ -104,7 +104,6 @@ pipeline {
         }
         failure {
             script {
-                                def logExcerpt = currentBuild.rawBuild
                 echo "Build failed! Here's the log excerpt:"
                 echo "${logExcerpt}"
                 echo "Build failed!"
