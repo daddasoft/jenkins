@@ -34,8 +34,8 @@ pipeline {
                 echo "build display name ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
                 echo "build display name ${env.SVN_REVISION}"
                 // get commit message by hash
-                // Use batch command on Windows
-                bat 'echo "Checking out..."'
+                // Use shell command on Ubuntu
+                sh 'echo "Checking out..."'
             }
         }
 
@@ -51,8 +51,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
-                // Use batch command on Windows
-                bat 'echo "Building..."'
+                // Use shell command on Ubuntu
+                sh 'echo "Building..."'
             }
         }
     }
@@ -79,7 +79,7 @@ pipeline {
                 if (params.MY_PARAM) {
                     echo "Parameter MY_PARAM: ${params.MY_PARAM}"
                 }
-                bat "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
+                sh "echo \"Build completed successfully! ${params.MY_PARAM}   ${env.GIT_COMMIT}   on Commit  \""
                 sendSlackNotification(":check_mark: SUCCESS", "Build succeeded for ${env.JOB_NAME} #${env.BUILD_NUMBER} on branch ${env.GIT_BRANCH}. Commit message: ${COMMIT_MESSAGE}")
             }
         }
@@ -90,7 +90,7 @@ pipeline {
                 echo "Build Number: ${env.BUILD_NUMBER}"
                  echo "Build result: ${currentBuild.result}"
                  echo "Build duration: ${currentBuild.duration}ms"
-                // Additional failure handling can also use global variables.
+                sendSlackNotification(":x: FAILURE", "Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}. Check ${env.BUILD_URL} for details.")
             }
         }
     }
@@ -98,25 +98,26 @@ pipeline {
 
 // Function to get commit message
 def getCommitMessage(commitHash = env.GIT_COMMIT) {
-    def cmd = "git log -1 --format=\"%%B\" ${commitHash}"
+    def cmd = "git log -1 --format=\"%B\" ${commitHash}"
     echo "Running command: ${cmd}"
-    def output = bat(script: cmd, returnStdout: true).trim()
+    def output = sh(script: cmd, returnStdout: true).trim()
     
-    // Extract actual commit message from bat output
-    // On Windows, the output typically includes the command echo and other text
-    return output.readLines().drop(1).join("\n").trim()
+    // On Linux we don't need to drop lines like in Windows
+    return output.trim()
 }
 
 // Function to send Slack notification
 def sendSlackNotification(String status, String message = null) {
-
-     def slackWebhookUrl = "https://hooks.slack.com/services/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"
+    def slackWebhookUrl = "https://hooks.slack.com/services/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"
 
     def payload = [
-        text: "${status}: ${message}",
-      ]
+        text: "${status}: ${message}"
+    ]
 
-    def jsonPayload = groovy.json.JsonOutput.toJson(payload).replace('"', '\\"')
-
-    bat "curl -X POST -v -H \"Content-type: application/json\" --data \"${jsonPayload}\" ${slackWebhookUrl}"
+    def jsonPayload = groovy.json.JsonOutput.toJson(payload)
+    
+    // Properly escape the JSON for shell command
+    sh """
+        curl -X POST -v -H 'Content-type: application/json' --data '${jsonPayload}' ${slackWebhookUrl}
+    """
 }
