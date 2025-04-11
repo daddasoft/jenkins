@@ -9,6 +9,7 @@ pipeline {
 
     parameters {
         string(name: 'MY_PARAM', defaultValue: 'default', description: 'A build parameter')
+        string(name: 'PROFILE', defaultValue: 'DEV', description: 'Profile to build')
     }
 
 
@@ -24,7 +25,7 @@ pipeline {
 	                sh """
 	                    curl -X POST "$SLACK_WEBHOOK_URL" \
 	                    -H "Content-Type: application/json" \
-	                    -d '{"text":       ":x:  commit message is ${getCommitMessage()}  :x:  commit hash is ${getHash()}"}'
+	                    -d '{"text":       "Build succeeded for Winpharm Backend with Profile ${params.PROFILE} on Commit ${getCommitMessage()} with Hash ${getHash()} at ${new Date().format("yyyy-MM-dd HH:mm:ss")}.}'
 	                """
 	            }
             }
