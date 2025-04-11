@@ -25,7 +25,7 @@ pipeline {
 	                sh """
 	                    curl -X POST "$SLACK_WEBHOOK_URL" \
 	                    -H "Content-Type: application/json" \
-	                    -d '{"text":       "Build succeeded for Winpharm Backend with Profile ${params.PROFILE} on Commit ${getCommitMessage()} with Hash ${getHash()} at ${new Date().format("yyyy-MM-dd HH:mm:ss")}.}'
+	                    -d '{"text":       "Build succeeded for Winpharm Backend with Profile ${params.PROFILE} on Commit ${getCommitMessage()} with Hash ${getHash()} at ${new Date().format(\"yyyy-MM-dd HH:mm:ss\")}".}'
 	                """
 	            }
             }
