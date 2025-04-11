@@ -105,7 +105,6 @@ pipeline {
         failure {
             script {
                 echo "Build failed! Here's the log excerpt:"
-                echo "${logExcerpt}"
                 echo "Build failed!"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
