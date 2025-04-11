@@ -37,8 +37,6 @@ pipeline {
                 // Use shell command on Ubuntu
                 sh 'echo "Checking out..."' 
 
-                def commitHash = getHash()
-                echo "Commit hash: ${commitHash}"
             }
         }
 
@@ -48,6 +46,8 @@ pipeline {
         script {
             COMMIT_MESSAGE = getCommitMessage()
             echo "Commit message: ${COMMIT_MESSAGE}"
+            def commitHash = getHash()
+            echo "Commit hash: ${commitHash}"
         }
     }
 }
