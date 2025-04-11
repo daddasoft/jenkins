@@ -71,7 +71,7 @@ pipeline {
             steps {
                 echo "Building on branch: ${env.BRANCH_NAME}"
                 // Use shell command on Ubuntu
-                sh 'echo "Building..."'
+                sh 'adfsdfsadfsdfs'
             }
         }
     }
@@ -104,6 +104,9 @@ pipeline {
         }
         failure {
             script {
+                                def logExcerpt = currentBuild.rawBuild.getLog(50).join('\n')
+                echo "Build failed! Here's the log excerpt:"
+                echo "${logExcerpt}"
                 echo "Build failed!"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Build Number: ${env.BUILD_NUMBER}"
